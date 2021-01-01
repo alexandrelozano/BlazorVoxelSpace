@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Cache-Control" content="no-store" />
+    <meta name="description" content="Demonstration of the Voxel Space technique">
+    <meta name="author" content="Alexandre Lozano Vilanova">
+    <meta name="keywords" content="Voxel, VoxelSpace, Voxel Space, Comanche, landscape, rendering">
+    <style>
+        html, body {
+            margin: 0;
+            height: 100%;
+            overflow: hidden
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        a {
+            color: white;
+        }
+
+        #info {
+            position: absolute;
+            top: 0px;
+            width: 100%;
+            padding: 5px;
+            z-index: 100;
+            color: white;
+            font-family: "Arial", Times, serif;
+            font-size: 120%;
+        }
+
+        #fps {
+            float: right;
+            position: absolute;
+            top: 0px;
+            right: 10px;
+            z-index: 100;
+            padding: 5px;
+            color: white;
+            font-family: "Arial", Times, serif;
+            font-size: 120%;
+        }
+    </style>
+
+</head>
+
+<body scroll="no">
+
+    <app>Loading...</app>
+
+    <script>
+        (function () {
+            var canvas;
+            var context;
+            var imageData;
+
+            window.InitCanvas = function InitCanvas(width, height) {
+                canvas = document.getElementById('fullscreenCanvas');
+                context = canvas.getContext('2d');
+                context.mozImageSmoothingEnabled = false;
+                context.webkitImageSmoothingEnabled = false;
+                context.msImageSmoothingEnabled = false;
+                context.imageSmoothingEnabled = false;
+                imageData = context.createImageData(width, height);
+                return true;
+            }
+
+            window.PaintCanvas = function PaintCanvas(dataPtr) {
+                imageData.data.set(Uint8ClampedArray.from(Module.HEAPU8.subarray(dataPtr, dataPtr + imageData.data.length)));
+                context.putImageData(imageData, 0, 0);
+                context.drawImage(canvas, 0, 0, canvas.width, canvas.height);
+                return true;
+            }
+        })();
+    </script>
+    <script src="_content/BlazorPro.BlazorSize/blazorSize.min.js"></script>
+    <script src="_framework/blazor.webassembly.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,28 @@
+﻿@page "/"
+
+<div id="fps">
+    @_fps fps
+</div>
+
+<div id="info">
+    @info Fly controls
+    <b>WASD</b> or <b>Cursor Keys</b> or <b>left click</b> move, <b>R|F</b> up | down, <b>Q|E</b> pitch,
+    <br>
+
+    <select class="form-control" @onchange="@OnSelect" value="C1W;D1">
+        @foreach (var map in maps)
+        {
+            <option value=@map.Value>@map.Key</option>
+        }
+    </select>
+
+    <label for="distancerange">Distance</label>
+    <input id="distancerange" type="range" min="100" max="2000" step="1" onchange="camera.distance = this.value">
+
+    <a href="https://github.com/s-macke/VoxelSpace">Github project page</a>
+
+</div>
+
+<canvas id="fullscreenCanvas" tabindex="0" @onkeydown="@OnCanvasKeyDown" @onkeyup="@OnCanvasKeyUp" width="@( browserSize != null ? browserSize.Width : 100 )" height="@( browserSize != null ? browserSize.Height : 100 )">
+    Your browser does not support the canvas element.
+</canvas>
