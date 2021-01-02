@@ -186,8 +186,7 @@ namespace BlazorVoxelSpace.Pages
                 time = DateTime.Now;
                 Draw();
             }
-            
-            info = "OnCanvasKeyDown:" + e.Code;
+
             StateHasChanged();
         }
 
