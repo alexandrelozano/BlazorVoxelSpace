@@ -17,7 +17,7 @@
     </select>
 
     <label for="distancerange">Distance</label>
-    <input id="distancerange" type="range" min="100" max="2000" step="1" onchange="camera.distance = this.value">
+    <input id="distancerange" type="range" min="100" max="2000" step="1" value="800"  @oninput="@((args) => camera.distance=double.Parse(args.Value.ToString()))">
 
     <a href="https://github.com/alexandrelozano/BlazorVoxelSpace">Github project page</a>
 
