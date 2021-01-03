@@ -115,7 +115,8 @@ namespace BlazorVoxelSpace.Pages
                 loadMap(maps[0].Value.ToString().Split(";")[0], maps[0].Value.ToString().Split(";")[1]);
 
                 await JSRuntime.InvokeAsync<bool>("InitCanvas",browserSize.Width, browserSize.Height);
-                
+                await JSRuntime.InvokeAsync<bool>("InitDotNetObject", DotNetObjectReference.Create(this));
+
                 _timer = new Timer(1);
                 _timer.Elapsed += NotifyTimerElapsed;
                 _timer.Enabled = true;
@@ -145,36 +146,37 @@ namespace BlazorVoxelSpace.Pages
             loadMap(s[0], s[1]);
         }
 
-        void OnCanvasKeyDown(KeyboardEventArgs e)
+        [JSInvokable("OnKeyDown")]
+        public void OnKeyDown(int keyCode)
         {
-            switch (e.Code)
+            switch (keyCode)
             {
-                case "ArrowLeft":    // left cursor
-                case "KeyA":    // a
-                    input.leftright = 1;
+                case 37:    // left cursor
+                case 65:    // a
+                    input.leftright = +1;
                     break;
-                case "ArrowRight":    // right cursor
-                case "KeyD":    // d
+                case 39:    // right cursor
+                case 68:    // d
                     input.leftright = -1;
                     break;
-                case "ArrowUp":    // cursor up
-                case "KeyW":    // w
+                case 38:    // cursor up
+                case 87:    // w
                     input.forwardbackward = 3;
                     break;
-                case "ArrowDown":    // cursor down
-                case "KeyS":    // s
+                case 40:    // cursor down
+                case 83:    // s
                     input.forwardbackward = -3;
                     break;
-                case "KeyR":    // r
+                case 82:    // r
                     input.updown = +2;
                     break;
-                case "KeyF":    // f
+                case 70:    // f
                     input.updown = -2;
                     break;
-                case "KeyE":    // e
+                case 69:    // e
                     input.lookup = true;
                     break;
-                case "KeyQ":    //q
+                case 81:    //q
                     input.lookdown = true;
                     break;
                 default:
@@ -190,36 +192,37 @@ namespace BlazorVoxelSpace.Pages
             StateHasChanged();
         }
 
-        void OnCanvasKeyUp(KeyboardEventArgs e)
+        [JSInvokable("OnKeyUp")]
+        public void OnKeyUp(int keyCode)
         {
-            switch (e.Code)
+            switch (keyCode)
             {
-                case "ArrowLeft":    // left cursor
-                case "KeyA":    // a
+                case 37:    // left cursor
+                case 65:    // a
                     input.leftright = 0;
                     break;
-                case "ArrowRight":    // right cursor
-                case "KeyD":    // d
+                case 39:    // right cursor
+                case 68:    // d
                     input.leftright = 0;
                     break;
-                case "ArrowUp":    // cursor up
-                case "KeyW":    // w
+                case 38:    // cursor up
+                case 87:    // w
                     input.forwardbackward = 0;
                     break;
-                case "ArrowDown":    // cursor down
-                case "KeyS":    // s
+                case 40:    // cursor down
+                case 83:    // s
                     input.forwardbackward = 0;
                     break;
-                case "KeyR":    // r
+                case 82:    // r
                     input.updown = 0;
                     break;
-                case "KeyF":    // f
+                case 70:    // f
                     input.updown = 0;
                     break;
-                case "KeyE":    // e
+                case 69:    // e
                     input.lookup = false;
                     break;
-                case "KeyQ":    //q
+                case 81:    //q
                     input.lookdown = false;
                     break;
                 default:

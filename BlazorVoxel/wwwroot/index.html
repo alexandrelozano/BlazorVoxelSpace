@@ -58,6 +58,20 @@
             var canvas;
             var context;
             var imageData;
+            var DotNetObject;
+
+            document.body.onkeydown = function (e) {
+                DotNetObject.invokeMethodAsync('OnKeyDown', e.keyCode);
+            }; 
+
+            document.body.onkeyup = function (e) {
+                DotNetObject.invokeMethodAsync('OnKeyUp', e.keyCode);
+            };
+
+            window.InitDotNetObject = function(dotnetobj){
+                DotNetObject = dotnetobj;
+                return true;
+            };
 
             window.InitCanvas = function InitCanvas(width, height) {
                 canvas = document.getElementById('fullscreenCanvas');
