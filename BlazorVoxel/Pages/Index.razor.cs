@@ -257,8 +257,8 @@ namespace BlazorVoxelSpace.Pages
             map.color = new uint[map.width * map.height];
             map.altitude = new uint[map.width * map.height];
 
-            textureMap = await loadImageFromURL("http://localhost:64186/maps/" + textureMapFile + ".png");
-            heightMap = await loadImageFromURL("http://localhost:64186/maps/" + heightMapFile + ".png");
+            textureMap = await loadImageFromURL("https://alexandrelozano.github.io/BlazorVoxelSpace/maps/" + textureMapFile + ".png");
+            heightMap = await loadImageFromURL("https://alexandrelozano.github.io/BlazorVoxelSpace/maps/" + heightMapFile + ".png");
 
             fillMap(textureMap, heightMap);
         }
