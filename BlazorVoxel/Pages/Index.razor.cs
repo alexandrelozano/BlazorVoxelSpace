@@ -393,7 +393,7 @@ namespace BlazorVoxelSpace.Pages
                 double invz = 1.0 / z * 240.0;
                 for (uint i = 0; i < browserSize.Width; i = i + 1)
                 {
-                    var mapoffset = (((uint)Math.Floor(ply) & mapwidthperiod) << (int)map.shift) + ((uint)Math.Floor(plx) & mapheightperiod);
+                    var mapoffset = (((int)Math.Floor(ply) & mapwidthperiod) << (int)map.shift) + ((int)Math.Floor(plx) & mapheightperiod);
                     var heightonscreen = (camera.height - map.altitude[mapoffset]) * invz + camera.horizon;
                     DrawVerticalLine(i, (uint)heightonscreen, hiddeny[i], map.color[mapoffset]);
                     if (heightonscreen < hiddeny[i]) hiddeny[i] = (uint)heightonscreen;
