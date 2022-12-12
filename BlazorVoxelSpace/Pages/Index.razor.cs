@@ -62,7 +62,7 @@ namespace BlazorVoxelSpace.Pages
         public BlazorCanvas Canvas { get; set; }
 
         BrowserWindowSize browserSize;
-        static int maxScreenWidth = 320;
+        static int maxScreenWidth = 640;
         static int screenBackGroundColor = RGBToint(200, 100, 100);
         
         int[] screen;
