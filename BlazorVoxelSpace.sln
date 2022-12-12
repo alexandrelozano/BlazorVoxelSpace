@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30717.126
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorVoxelSpace", "BlazorVoxel\BlazorVoxelSpace.csproj", "{DFF197C0-4A09-456C-9005-3C93576C66BA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorVoxelSpace", "BlazorVoxelSpace\BlazorVoxelSpace.csproj", "{E04A5FE1-839A-4A82-B540-A3636538F0CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DFF197C0-4A09-456C-9005-3C93576C66BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DFF197C0-4A09-456C-9005-3C93576C66BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DFF197C0-4A09-456C-9005-3C93576C66BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DFF197C0-4A09-456C-9005-3C93576C66BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E04A5FE1-839A-4A82-B540-A3636538F0CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E04A5FE1-839A-4A82-B540-A3636538F0CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E04A5FE1-839A-4A82-B540-A3636538F0CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E04A5FE1-839A-4A82-B540-A3636538F0CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {51980BA5-3258-4AB8-9FE5-71E71D437508}
+		SolutionGuid = {9AC28C67-6B95-4456-8B6A-61DD63041FF1}
 	EndGlobalSection
 EndGlobal

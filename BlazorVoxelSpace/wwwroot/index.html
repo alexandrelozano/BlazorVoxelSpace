@@ -1,8 +1,14 @@
-﻿<!DOCTYPE html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>BlazorVoxelSpace</title>
+    <base href="/" />
+    <link href="css/app.css" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link href="BlazorVoxelSpace.styles.css" rel="stylesheet" />
     <meta http-equiv="Cache-Control" content="no-store" />
     <meta name="description" content="Demonstration of the Voxel Space technique">
     <meta name="author" content="Alexandre Lozano Vilanova">
@@ -46,55 +52,42 @@
             font-size: 120%;
         }
     </style>
-
 </head>
 
 <body scroll="no">
+    <div id="app">
+        <svg class="loading-progress">
+            <circle r="40%" cx="50%" cy="50%" />
+            <circle r="40%" cx="50%" cy="50%" />
+        </svg>
+        <div class="loading-progress-text"></div>
+    </div>
 
-    <app>Loading...</app>
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+    <script src="_framework/blazor.webassembly.js"></script>
 
     <script>
         (function () {
-            var canvas;
-            var context;
-            var imageData;
             var DotNetObject;
 
             document.body.onkeydown = function (e) {
                 DotNetObject.invokeMethodAsync('OnKeyDown', e.keyCode);
-            }; 
+            };
 
             document.body.onkeyup = function (e) {
                 DotNetObject.invokeMethodAsync('OnKeyUp', e.keyCode);
             };
 
-            window.InitDotNetObject = function(dotnetobj){
+            window.InitDotNetObject = function (dotnetobj) {
                 DotNetObject = dotnetobj;
                 return true;
             };
-
-            window.InitCanvas = function InitCanvas(width, height) {
-                canvas = document.getElementById('fullscreenCanvas');
-                context = canvas.getContext('2d');
-                context.mozImageSmoothingEnabled = false;
-                context.webkitImageSmoothingEnabled = false;
-                context.msImageSmoothingEnabled = false;
-                context.imageSmoothingEnabled = false;
-                imageData = context.createImageData(width, height);
-                return true;
-            }
-
-            window.PaintCanvas = function PaintCanvas(dataPtr) {
-                imageData.data.set(Uint8ClampedArray.from(Module.HEAPU8.subarray(dataPtr, dataPtr + imageData.data.length)));
-                context.putImageData(imageData, 0, 0);
-                context.drawImage(canvas, 0, 0, canvas.width, canvas.height);
-                return true;
-            }
         })();
     </script>
-    <script src="_content/BlazorPro.BlazorSize/blazorSize.min.js"></script>
-    <script src="_framework/blazor.webassembly.js"></script>
-
 </body>
 
 </html>

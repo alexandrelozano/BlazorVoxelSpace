@@ -17,12 +17,12 @@
     </select>
 
     <label for="distancerange">Distance</label>
-    <input id="distancerange" type="range" min="100" max="2000" step="1" value="800"  @oninput="@((args) => camera.distance=double.Parse(args.Value.ToString()))">
+    <input id="distancerange" type="range" min="100" max="2000" step="1" value="800" @oninput="@((args) => camera.distance=float.Parse(args.Value.ToString()))">
 
     <a href="https://github.com/alexandrelozano/BlazorVoxelSpace">Github project page</a>
 
 </div>
 
-<canvas id="fullscreenCanvas" tabindex="0" width="@( browserSize != null ? browserSize.Width : 100 )" height="@( browserSize != null ? browserSize.Height : 100 )">
-    Your browser does not support the canvas element.
-</canvas>
+<Aptacode.BlazorCanvas.BlazorCanvas @ref="Canvas">
+    <canvas width="@( browserSize != null ? browserSize.Width : 100 )" height="@( browserSize != null ? browserSize.Height : 100 )" style="image-rendering: crisp-edges;"></canvas>
+</Aptacode.BlazorCanvas.BlazorCanvas>

@@ -13,26 +13,31 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using BlazorPro.BlazorSize;
 using Microsoft.AspNetCore.Components.Web;
+using System.Diagnostics;
+using Aptacode.BlazorCanvas;
+using SixLabors.ImageSharp.Metadata.Profiles.Exif;
 
 namespace BlazorVoxelSpace.Pages
 {
     public class Camera
     {
-        public double x;
-        public double y;
-        public double height;
-        public double angle;
-        public double horizon;
-        public double distance;
+        public float x;
+        public float y;
+        public float height;
+        public float angle;
+        public float horizon;
+        public float distance;
     }
 
     public class Map
     {
-        public uint width;
-        public uint height;
-        public uint shift;
-        public uint[] altitude;
-        public uint[] color;
+        public int width;
+        public int height;
+        public int widthperiod;
+        public int heightperiod; 
+        public int shift;
+        public int[] altitude;
+        public int[] color;
     }
 
     public class Input
@@ -54,11 +59,19 @@ namespace BlazorVoxelSpace.Pages
         [Inject]
         ResizeListener listener { get; set; }
 
+        public BlazorCanvas Canvas { get; set; }
+
         BrowserWindowSize browserSize;
         static int maxScreenWidth = 320;
-        static uint screenBackGroundColor = 0xFFE09090;
-        uint[] screen;
-        private Timer _timer;
+        static int screenBackGroundColor = RGBToint(200, 100, 100);
+        
+        int[] screen;
+        int[] screenBG;
+
+        int[] hiddeny;
+        int[] hiddenyOrig;
+
+        private System.Timers.Timer _timer;
         DateTime _lastTime; // marks the beginning the measurement began
         int _framesRendered; // an increasing count
         int _fps; // the FPS calculated from the last measurement
@@ -69,6 +82,11 @@ namespace BlazorVoxelSpace.Pages
         DateTime time;
         bool updaterunning;
         string info;
+
+        protected static int RGBToint(byte r, byte g, byte b)
+        { 
+            return (255 << 24) | (r << 16) | (g << 8) | b;
+        }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -114,10 +132,9 @@ namespace BlazorVoxelSpace.Pages
 
                 loadMap(maps[0].Value.ToString().Split(";")[0], maps[0].Value.ToString().Split(";")[1]);
 
-                await JSRuntime.InvokeAsync<bool>("InitCanvas",browserSize.Width, browserSize.Height);
                 await JSRuntime.InvokeAsync<bool>("InitDotNetObject", DotNetObjectReference.Create(this));
 
-                _timer = new Timer(1);
+                _timer = new System.Timers.Timer(1);
                 _timer.Elapsed += NotifyTimerElapsed;
                 _timer.Enabled = true;
             }
@@ -129,15 +146,26 @@ namespace BlazorVoxelSpace.Pages
             browserSize = window;
             if (window.Width > maxScreenWidth) browserSize.Width = maxScreenWidth;
             
-            double aspect = (double)browserSize.Width / (double)browserSize.Height;
+            float aspect = (float)((float)browserSize.Width / (float)browserSize.Height);
             browserSize.Height = (int)(browserSize.Width / aspect);
 
-            screen = new uint[browserSize.Width * browserSize.Height];
+            screen = new int[browserSize.Width * browserSize.Height];
+            screenBG = new int[browserSize.Width * browserSize.Height];
+
+            Parallel.For(0, browserSize.Width * browserSize.Height, i => {
+                screenBG[i] = screenBackGroundColor;
+            });
+
+            hiddeny = new int[browserSize.Width];
+            hiddenyOrig = new int[browserSize.Width];
+            Parallel.For(0, browserSize.Width-1, i => {
+                hiddenyOrig[i] = browserSize.Height;
+            });
+
+            DrawBackground();
 
             // We're outside of the component's lifecycle, be sure to let it know it has to re-render.
             StateHasChanged();
-
-            await JSRuntime.InvokeAsync<bool>("InitCanvas", browserSize.Width, browserSize.Height);
         }
 
         void OnSelect(ChangeEventArgs e)
@@ -253,10 +281,11 @@ namespace BlazorVoxelSpace.Pages
             map = new Map();
             map.width = 1024;
             map.height = 1024;
+            map.widthperiod = map.width - 1;
+            map.heightperiod = map.height - 1;
             map.shift = 10;
-            map.color = new uint[map.width * map.height];
-            map.altitude = new uint[map.width * map.height];
-
+            map.color = new int[map.width * map.height];
+            map.altitude = new int[map.width * map.height];
             textureMap = await loadImageFromURL("https://alexandrelozano.github.io/BlazorVoxelSpace/maps/" + textureMapFile + ".png");
             heightMap = await loadImageFromURL("https://alexandrelozano.github.io/BlazorVoxelSpace/maps/" + heightMapFile + ".png");
 
@@ -270,7 +299,7 @@ namespace BlazorVoxelSpace.Pages
 
             for (int i = 0; i < map.width * map.height; i++)
             {
-                map.color[i] = pixelSpanTexture[i].PackedValue;
+                map.color[i] = (int)pixelSpanTexture[i].PackedValue;
                 map.altitude[i] = pixelSpanHeight[i].R;
             }
         }
@@ -280,7 +309,7 @@ namespace BlazorVoxelSpace.Pages
             HttpClient httpClient = new HttpClient();
             HttpResponseMessage response = await httpClient.GetAsync(url);
             Stream inputStream = await response.Content.ReadAsStreamAsync();
-
+            Console.WriteLine("lenght:"+inputStream.Length);
             Image<Rgba32>img = Image.Load<Rgba32>(inputStream);
             img.Mutate(x => x.Resize((int)map.width, (int)map.height));
 
@@ -290,10 +319,11 @@ namespace BlazorVoxelSpace.Pages
         void Draw()
         {
             updaterunning = true;
+
             UpdateCamera();
-            DrawBackground();
+            DrawBackground();      
             Render();
-            Flip();
+            DrawCanvas();
 
             if (!input.keypressed)
             {
@@ -312,28 +342,28 @@ namespace BlazorVoxelSpace.Pages
             input.keypressed = false;
             if (input.leftright != 0)
             {
-                camera.angle += input.leftright * 0.1 * (current - time).TotalMilliseconds * 0.03;
+                camera.angle += (float)(input.leftright * 0.1 * (current - time).TotalMilliseconds * 0.03);
                 input.keypressed = true;
             }
             if (input.forwardbackward != 0)
             {
-                camera.x -= input.forwardbackward * Math.Sin(camera.angle) * (current - time).TotalMilliseconds * 0.03;
-                camera.y -= input.forwardbackward * Math.Cos(camera.angle) * (current - time).TotalMilliseconds * 0.03;
+                camera.x -= (float)(input.forwardbackward * Sin(camera.angle) * (current - time).TotalMilliseconds * 0.03);
+                camera.y -= (float)(input.forwardbackward * Cos(camera.angle) * (current - time).TotalMilliseconds * 0.03);
                 input.keypressed = true;
             }
             if (input.updown != 0)
             {
-                camera.height += input.updown * (current - time).TotalMilliseconds * 0.03;
+                camera.height += (float)(input.updown * (current - time).TotalMilliseconds * 0.03);
                 input.keypressed = true;
             }
             if (input.lookup)
             {
-                camera.horizon += 2 * (current - time).TotalMilliseconds * 0.09;
+                camera.horizon += (float)(2 * (current - time).TotalMilliseconds * 0.09);
                 input.keypressed = true;
             }
             if (input.lookdown)
             {
-                camera.horizon -= 2 * (current - time).TotalMilliseconds * 0.09;
+                camera.horizon -= (float)(2 * (current - time).TotalMilliseconds * 0.09);
                 input.keypressed = true;
             }
 
@@ -346,39 +376,27 @@ namespace BlazorVoxelSpace.Pages
 
         void DrawBackground()
         {
-            for (uint i = 0; i < browserSize.Width * browserSize.Height; i++)
-            {
-                screen[i] = screenBackGroundColor;
-            }
+            Array.Copy(screenBG, screen, screenBG.Length);
         }
 
-        protected void Flip()
-        {
-            var gch = GCHandle.Alloc(screen, GCHandleType.Pinned);
-            var pinned = gch.AddrOfPinnedObject();
-            var mono = JSRuntime as WebAssemblyJSRuntime;
-            mono.InvokeUnmarshalled<IntPtr, string>("PaintCanvas", pinned);
-            gch.Free();
+        protected void DrawCanvas() {
+            Canvas.SetImageBuffer(screen);
+            Canvas.DrawImageBuffer(0, 0, browserSize.Width, browserSize.Height);
         }
 
         protected void Render()
         {
             if (map == null) return;
 
-            var mapwidthperiod = map.width - 1;
-            var mapheightperiod = map.height - 1;
+            var sinang = Sin(camera.angle);
+            var cosang = Cos(camera.angle);
 
-            var sinang = Math.Sin(camera.angle);
-            var cosang = Math.Cos(camera.angle);
+            Array.Copy(hiddenyOrig, hiddeny, hiddenyOrig.Length);
 
-            uint[] hiddeny = new uint[browserSize.Width];
-            for (int i = 0; i < browserSize.Width; i = i + 1 | 0)
-                hiddeny[i] = (uint)browserSize.Height;
-
-            double deltaz = 1.0;
+            float deltaz = (float)1.0;
 
             // Draw from front to back
-            for (double z = 1; z < camera.distance; z += deltaz)
+            for (float z = 1; z < camera.distance; z += deltaz)
             {
                 // 90 degree field of view
                 var plx = -cosang * z - sinang * z;
@@ -390,20 +408,22 @@ namespace BlazorVoxelSpace.Pages
                 var dy = (pry - ply) / browserSize.Width;
                 plx += camera.x;
                 ply += camera.y;
-                double invz = 1.0 / z * 240.0;
-                for (uint i = 0; i < browserSize.Width; i = i + 1)
+                float invz = (float)(1.0 / z * 240.0);
+
+                for (int i = 0; i < browserSize.Width; i = i + 1)
                 {
-                    var mapoffset = (((int)(ply+0.5d) & mapwidthperiod) << (int)map.shift) + ((int)(plx + 0.5d) & mapheightperiod);
-                    var heightonscreen = (camera.height - map.altitude[mapoffset]) * invz + camera.horizon;
-                    DrawVerticalLine(i, (uint)heightonscreen, hiddeny[i], map.color[mapoffset]);
-                    if (heightonscreen < hiddeny[i]) hiddeny[i] = (uint)heightonscreen;
+                    var mapoffset = (((int)(ply + 0.5d) & map.widthperiod) << (int)map.shift) + ((int)(plx + 0.5d) & map.heightperiod);
+                    var heightonscreen = (int)((camera.height - map.altitude[mapoffset]) * invz + camera.horizon);
+                    DrawVerticalLine(i, heightonscreen, hiddeny[i], map.color[mapoffset]);
+                    if (heightonscreen < hiddeny[i]) hiddeny[i] = heightonscreen;
                     plx += dx;
                     ply += dy;
                 }
-                deltaz += 0.005;
+
+                deltaz += (float)0.005;
             }
 
-            void DrawVerticalLine(uint x, uint ytop, uint ybottom, uint col)
+            void DrawVerticalLine(int x, int ytop, int ybottom, int col)
             {
                 if (ytop < 0) ytop = 0;
                 if (ytop > ybottom) return;
@@ -416,6 +436,43 @@ namespace BlazorVoxelSpace.Pages
                     offset = offset + browserSize.Width;
                 }
             }
+        }
+
+        public static float Sin(float x) //x in radians
+        {
+            float sinn;
+            if (x < -3.14159265f)
+                x += 6.28318531f;
+            else
+            if (x > 3.14159265f)
+                x -= 6.28318531f;
+
+            if (x < 0)
+            {
+                sinn = 1.27323954f * x + 0.405284735f * x * x;
+
+                if (sinn < 0)
+                    sinn = 0.225f * (sinn * -sinn - sinn) + sinn;
+                else
+                    sinn = 0.225f * (sinn * sinn - sinn) + sinn;
+                return sinn;
+            }
+            else
+            {
+                sinn = 1.27323954f * x - 0.405284735f * x * x;
+
+                if (sinn < 0)
+                    sinn = 0.225f * (sinn * -sinn - sinn) + sinn;
+                else
+                    sinn = 0.225f * (sinn * sinn - sinn) + sinn;
+                return sinn;
+
+            }
+        }
+
+        public static float Cos(float x) //x in radians
+        {
+            return Sin(x + 1.5707963f);
         }
     }
 }
