@@ -6,6 +6,6 @@ Voxel terrain engine.
 
 Canvas rendering tecnique from [ZXSpectrum emulator written in C#](https://github.com/EngstromJimmy/ZXSpectrum)
 
-Demo [here](https://alexandrelozano.github.io/BlazorVoxelSpace/)
+Demo [here](http://13.48.11.221/BlazorVoxelSpace/)
 
 ![Sample](https://github.com/alexandrelozano/BlazorVoxelSpace/raw/master/Resources/sample.gif)
