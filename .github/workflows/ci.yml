@@ -12,7 +12,7 @@ jobs:
         - name: Setup .NET Core
           uses: actions/setup-dotnet@v1
           with:
-            dotnet-version: 3.1.x
+            dotnet-version: 7.x
 
         # Run tests
         - name: Test
@@ -20,7 +20,7 @@ jobs:
 
         # Generate the website
         - name: Publish
-          run: dotnet publish BlazorVoxel/BlazorVoxelSpace.csproj --configuration Release
+          run: dotnet publish BlazorVoxelSpace/BlazorVoxelSpace.csproj --configuration Release
 
         # Publish the website
         - name: GitHub Pages action
