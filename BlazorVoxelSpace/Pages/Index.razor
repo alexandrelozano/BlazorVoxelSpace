@@ -5,6 +5,7 @@
 </div>
 
 <div id="info">
+
     @info Fly controls
     <b>WASD</b> or <b>Cursor Keys</b> move, <b>R|F</b> up | down, <b>Q|E</b> pitch,
     <br>
@@ -21,8 +22,40 @@
 
     <a href="https://github.com/alexandrelozano/BlazorVoxelSpace">Github project page</a>
 
+    <br />
+    <table>
+        <tr>
+            <td>
+                <input id="Q" type="button" value="Q" style="width:100%;background-color:palevioletred;" onmouseover="document.body.dispatchEvent(new KeyboardEvent('keydown', {keyCode:81}));" onmouseout="document.body.dispatchEvent(new KeyboardEvent('keyup', {keyCode:81}));" />
+            </td>
+            <td>
+                <input id="W" type="button" value="W" style="width:100%;background-color:blanchedalmond;" onmouseover="document.body.dispatchEvent(new KeyboardEvent('keydown', {keyCode:87}));" onmouseout="document.body.dispatchEvent(new KeyboardEvent('keyup', {keyCode:87}));" />
+            </td>
+            <td>
+                <input id="E" type="button" value="E" style="width:100%;background-color:palevioletred;" onmouseover="document.body.dispatchEvent(new KeyboardEvent('keydown', {keyCode:69}));" onmouseout="document.body.dispatchEvent(new KeyboardEvent('keyup', {keyCode:69}));" />
+            </td>
+            <td>
+                <input id="R" type="button" value="R" style="width:100%;background-color:cadetblue;" onmouseover="document.body.dispatchEvent(new KeyboardEvent('keydown', {keyCode:82}));" onmouseout="document.body.dispatchEvent(new KeyboardEvent('keyup', {keyCode:82}));" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input id="A" type="button" value="A" style="width:100%;background-color:blanchedalmond;" onmouseover="document.body.dispatchEvent(new KeyboardEvent('keydown', {keyCode:65}));" onmouseout="document.body.dispatchEvent(new KeyboardEvent('keyup', {keyCode:65}));" />
+            </td>
+            <td>
+                <input id="S" type="button" value="S" style="width:100%;background-color:blanchedalmond;" onmouseover="document.body.dispatchEvent(new KeyboardEvent('keydown', {keyCode:83}));" onmouseout="document.body.dispatchEvent(new KeyboardEvent('keyup', {keyCode:83}));" />
+            </td>
+            <td>
+                <input id="D" type="button" value="D" style="width:100%;background-color:blanchedalmond;" onmouseover="document.body.dispatchEvent(new KeyboardEvent('keydown', {keyCode:68}));" onmouseout="document.body.dispatchEvent(new KeyboardEvent('keyup', {keyCode:87}));" />
+            </td>
+            <td>
+                <input id="F" type="button" value="F" style="width:100%;background-color:cadetblue;" onmouseover="document.body.dispatchEvent(new KeyboardEvent('keydown', {keyCode:70}));" onmouseout="document.body.dispatchEvent(new KeyboardEvent('keyup', {keyCode:70}));" />
+            </td>
+        </tr>
+    </table>
+
 </div>
 
-<Aptacode.BlazorCanvas.BlazorCanvas @ref="Canvas">
-    <canvas width="@( browserSize != null ? browserSize.Width : 100 )" height="@( browserSize != null ? browserSize.Height : 100 )" style="image-rendering: crisp-edges;"></canvas>
+<Aptacode.BlazorCanvas.BlazorCanvas @ref="Canvas" >
+    <canvas width="@( browserSize != null ? browserSize.Width : 100 )" height="@( browserSize != null ? browserSize.Height : 100 )" style="image-rendering: crisp-edges;" onmouseover="document.body.dispatchEvent(new KeyboardEvent('keyup', {keyCode:81}));document.body.dispatchEvent(new KeyboardEvent('keyup', {keyCode:87}));document.body.dispatchEvent(new KeyboardEvent('keyup', {keyCode:69}));document.body.dispatchEvent(new KeyboardEvent('keyup', {keyCode:82}));document.body.dispatchEvent(new KeyboardEvent('keyup', {keyCode:65}));document.body.dispatchEvent(new KeyboardEvent('keyup', {keyCode:83}));document.body.dispatchEvent(new KeyboardEvent('keyup', {keyCode:68}));document.body.dispatchEvent(new KeyboardEvent('keyup', {keyCode:70}));"></canvas>
 </Aptacode.BlazorCanvas.BlazorCanvas>
