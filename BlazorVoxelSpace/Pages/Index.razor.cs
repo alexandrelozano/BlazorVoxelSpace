@@ -1,21 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System.Timers;
-using System.Runtime.InteropServices;
 using Microsoft.JSInterop;
-using Microsoft.JSInterop.WebAssembly;
-using System;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using SixLabors.ImageSharp;
-using System.Net.Http;
-using System.IO;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using BlazorPro.BlazorSize;
-using Microsoft.AspNetCore.Components.Web;
-using System.Diagnostics;
 using Aptacode.BlazorCanvas;
-using SixLabors.ImageSharp.Metadata.Profiles.Exif;
 
 namespace BlazorVoxelSpace.Pages
 {
@@ -82,16 +72,50 @@ namespace BlazorVoxelSpace.Pages
         DateTime time;
         bool updaterunning;
         string info;
+        string isDevice;
+        bool mobile;
+        string _divControlsDisplay;
+        string _divInfoTextSize;
+
+        protected string leftright()
+        {
+            if (camera!=null)
+            {
+                return camera.angle.ToString();
+            }
+            else
+            {
+                return "";
+            }
+        }
 
         protected static int RGBToint(byte r, byte g, byte b)
         { 
             return (255 << 24) | (r << 16) | (g << 8) | b;
         }
 
+        public async Task FindResponsiveness()
+        {
+            mobile = await JSRuntime.InvokeAsync<bool>("isDevice");
+            isDevice = mobile ? "Mobile" : "Desktop";
+        }
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
             {
+                await FindResponsiveness();
+
+                if (!mobile)
+                {
+                    _divControlsDisplay = "display: none;";
+                    _divInfoTextSize = "font-size: 120%;";
+                }
+                else
+                {
+                    _divInfoTextSize = "font-size: 60%;";
+                }
+
                 OnResizeWindow(null, await listener.GetBrowserWindowSize());
                 listener.OnResized += OnResizeWindow;
 
@@ -343,6 +367,15 @@ namespace BlazorVoxelSpace.Pages
             if (input.leftright != 0)
             {
                 camera.angle += (float)(input.leftright * 0.1 * (current - time).TotalMilliseconds * 0.03);
+                if (camera.angle> 6.28318531f)
+                {
+                    camera.angle -= 6.28318531f;
+                }
+                else if (camera.angle < -6.28318531f)
+                {
+                    camera.angle += 6.28318531f;
+                }
+
                 input.keypressed = true;
             }
             if (input.forwardbackward != 0)

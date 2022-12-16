@@ -4,10 +4,10 @@
     @_fps fps
 </div>
 
-<div id="info">
+<div id="info" style="@_divInfoTextSize">
 
     @info Fly controls
-    <b>WASD</b> or <b>Cursor Keys</b> move, <b>R|F</b> up | down, <b>Q|E</b> pitch,
+    <b>WASD</b> or <b>Cursor Keys</b> move, <b>R|F</b> up | down, <b>Q|E</b> pitch
     <br>
 
     <select class="form-control" @onchange="@OnSelect" value="C1W;D1">
@@ -21,39 +21,40 @@
     <input id="distancerange" type="range" min="100" max="2000" step="1" value="800" @oninput="@((args) => camera.distance=float.Parse(args.Value.ToString()))">
 
     <a href="https://github.com/alexandrelozano/BlazorVoxelSpace">Github project page</a>
+    
+</div>
 
-    <br />
-    <table>
+<div id="controls" style="@_divControlsDisplay">
+    <table style="width:50%;height:25%;position:fixed;bottom: 0px;right: 0px;">
         <tr>
-            <td>
-                <input id="Q" type="button" value="Q" style="width:100%;background-color:palevioletred;" onmouseover="document.body.dispatchEvent(new KeyboardEvent('keydown', {keyCode:81}));" onmouseout="document.body.dispatchEvent(new KeyboardEvent('keyup', {keyCode:81}));" />
+            <td style="border:none;">
+                <input id="bttQ" type="button" value="Q" style="height:100%;width:100%;background-color:palevioletred;" ontouchstart="document.body.dispatchEvent(new KeyboardEvent('keydown', {keyCode:81}));" ontouchend="document.body.dispatchEvent(new KeyboardEvent('keyup', {keyCode:81}));" />
             </td>
             <td>
-                <input id="W" type="button" value="W" style="width:100%;background-color:blanchedalmond;" onmouseover="document.body.dispatchEvent(new KeyboardEvent('keydown', {keyCode:87}));" onmouseout="document.body.dispatchEvent(new KeyboardEvent('keyup', {keyCode:87}));" />
+                <input id="W" type="button" value="W" style="height:100%;width:100%;background-color:blanchedalmond;" ontouchstart="document.body.dispatchEvent(new KeyboardEvent('keydown', {keyCode:87}));" ontouchend="document.body.dispatchEvent(new KeyboardEvent('keyup', {keyCode:87}));" />
             </td>
             <td>
-                <input id="E" type="button" value="E" style="width:100%;background-color:palevioletred;" onmouseover="document.body.dispatchEvent(new KeyboardEvent('keydown', {keyCode:69}));" onmouseout="document.body.dispatchEvent(new KeyboardEvent('keyup', {keyCode:69}));" />
+                <input id="E" type="button" value="E" style="height:100%;width:100%;background-color:palevioletred;" ontouchstart="document.body.dispatchEvent(new KeyboardEvent('keydown', {keyCode:69}));" ontouchend="document.body.dispatchEvent(new KeyboardEvent('keyup', {keyCode:69}));" />
             </td>
             <td>
-                <input id="R" type="button" value="R" style="width:100%;background-color:cadetblue;" onmouseover="document.body.dispatchEvent(new KeyboardEvent('keydown', {keyCode:82}));" onmouseout="document.body.dispatchEvent(new KeyboardEvent('keyup', {keyCode:82}));" />
+                <input id="R" type="button" value="R" style="height:100%;width:100%;background-color:cadetblue;" ontouchstart="document.body.dispatchEvent(new KeyboardEvent('keydown', {keyCode:82}));" ontouchend="document.body.dispatchEvent(new KeyboardEvent('keyup', {keyCode:82}));" />
             </td>
         </tr>
         <tr>
             <td>
-                <input id="A" type="button" value="A" style="width:100%;background-color:blanchedalmond;" onmouseover="document.body.dispatchEvent(new KeyboardEvent('keydown', {keyCode:65}));" onmouseout="document.body.dispatchEvent(new KeyboardEvent('keyup', {keyCode:65}));" />
+                <input id="A" type="button" value="A" style="height:100%;width:100%;background-color:blanchedalmond;" ontouchstart="document.body.dispatchEvent(new KeyboardEvent('keydown', {keyCode:65}));" ontouchend="document.body.dispatchEvent(new KeyboardEvent('keyup', {keyCode:65}));" />
             </td>
             <td>
-                <input id="S" type="button" value="S" style="width:100%;background-color:blanchedalmond;" onmouseover="document.body.dispatchEvent(new KeyboardEvent('keydown', {keyCode:83}));" onmouseout="document.body.dispatchEvent(new KeyboardEvent('keyup', {keyCode:83}));" />
+                <input id="S" type="button" value="S" style="height:100%;width:100%;background-color:blanchedalmond;" ontouchstart="document.body.dispatchEvent(new KeyboardEvent('keydown', {keyCode:83}));" ontouchend="document.body.dispatchEvent(new KeyboardEvent('keyup', {keyCode:83}));" />
             </td>
             <td>
-                <input id="D" type="button" value="D" style="width:100%;background-color:blanchedalmond;" onmouseover="document.body.dispatchEvent(new KeyboardEvent('keydown', {keyCode:68}));" onmouseout="document.body.dispatchEvent(new KeyboardEvent('keyup', {keyCode:87}));" />
+                <input id="D" type="button" value="D" style="height:100%;width:100%;background-color:blanchedalmond;" ontouchstart="document.body.dispatchEvent(new KeyboardEvent('keydown', {keyCode:68}));" ontouchend="document.body.dispatchEvent(new KeyboardEvent('keyup', {keyCode:68}));" />
             </td>
             <td>
-                <input id="F" type="button" value="F" style="width:100%;background-color:cadetblue;" onmouseover="document.body.dispatchEvent(new KeyboardEvent('keydown', {keyCode:70}));" onmouseout="document.body.dispatchEvent(new KeyboardEvent('keyup', {keyCode:70}));" />
+                <input id="F" type="button" value="F" style="height:100%;width:100%;background-color:cadetblue;" ontouchstart="document.body.dispatchEvent(new KeyboardEvent('keydown', {keyCode:70}));" ontouchend="document.body.dispatchEvent(new KeyboardEvent('keyup', {keyCode:70}));" />
             </td>
         </tr>
     </table>
-
 </div>
 
 <Aptacode.BlazorCanvas.BlazorCanvas @ref="Canvas" >
